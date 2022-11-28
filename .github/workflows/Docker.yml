@@ -19,6 +19,23 @@ jobs:
       uses: docker/login-action@v2.0.0
       with:
     # Username used to log against the Docker registry
-        username: leonardosartorello
+        username: lidianesousa
     # Password or personal access token used to log against the Docker registry
         password: ${{ secrets.PASSWORD_DOCKER_HUB }}
+        
+    - name: Build and push Docker images
+  # You may pin to the exact commit or the version.
+  # uses: docker/build-push-action@c56af957549030174b10d6867f20e78cfd7debc5
+      uses: docker/build-push-action@v3.2.0
+      with:
+    
+    # Build's context is the set of files located in the specified PATH or URL
+        context: .
+    # Path to the Dockerfile
+        file: ./Dockerfile
+    
+        push: true
+    
+    # List of tags
+        tags: lidianesousa/go_ci:${{github.ref_name}}
+    
