@@ -2,17 +2,18 @@ name: Go
 
 on:
   push:
-    branches: [ "*" ]
+    branches: [ Aula_1 ]
   pull_request:
-    branches: [ "*" ]
+    branches: [ Aula_1 ]
 
 jobs:
 
   test:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         go_version: ['1.18', '1.17', '>=1.18']
+        os: ['ubuntu-latest', 'ubuntu-18.04']
     steps:
     - uses: actions/checkout@v3
 
