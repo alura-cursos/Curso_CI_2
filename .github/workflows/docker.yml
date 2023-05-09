@@ -13,6 +13,12 @@ jobs:
     - name: setup Docker Build
       uses: docker/setup-buildx-action@v2.0.0
       
+    - name: Download a Build Artifact
+      uses: actions/download-artifact@v2.1.1
+      with:
+    # Artifact name
+        name: programa
+      
     - name: Docker Login
   # You may pin to the exact commit or the version.
   # uses: docker/login-action@49ed152c8eca782a232dede0303416e8f356c37b
