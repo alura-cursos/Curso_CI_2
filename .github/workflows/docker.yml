@@ -22,3 +22,17 @@ jobs:
         username: luc4592
     # Password or personal access token used to log against the Docker registry
         password: ${{ secrets.PASSWD }}
+
+    - name: Build and push Docker images
+  # You may pin to the exact commit or the version.
+  # uses: docker/build-push-action@3b5e8027fcad23fda98b2e3ac259d8d67585f671
+      uses: docker/build-push-action@v4.0.0
+      with:
+    # Build's context is the set of files located in the specified PATH or URL
+        context: .
+    # Path to the Dockerfile
+        file: ./Dockerfile
+    # Push is a shorthand for --output=type=registry
+        push: true
+    # List of tags
+        tags: luc4592/go_ci:${{ github.ref_name }}
