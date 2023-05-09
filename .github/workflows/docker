@@ -1,0 +1,19 @@
+steps:
+ -name: Instal Go
+ uses: action/setup-go@v1
+ with:
+  go-version: ${{ natrix.go-version}}
+  
+  -name: Checkout code
+   uses:action/checkout@v2
+   
+  -name: Creating .env
+   uses: canastro/copy-file-action@master
+   with: 
+    source: ".env.exemplo"
+    target: ".env"
+	
+- name: Docker Login
+    - uses: actions/checkout@v3
+    - name: Build the Docker image
+      run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
