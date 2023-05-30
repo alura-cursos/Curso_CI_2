@@ -10,6 +10,12 @@ jobs:
 
   test:
     runs-on: ${{ matrix.os }}
+    env:
+      HOST: localhost
+      PORT: 5432
+      USER: root
+      PASSWORD: root
+      DBNAME: root
     strategy:
       matrix:
         go_version: ['1.18', '1.17', '>=1.18']
@@ -38,7 +44,22 @@ jobs:
     strategy:
       matrix:
         os: ['ubuntu-latest', 'ubuntu-20.04']
+
     steps:
     - uses: actions/checkout@v3
     - name: Build
       run: go build -v main.go
+      
+    - name: Upload a Build Artifact
+      uses: actions/upload-artifact@v3.1.0
+      with:
+    # Artifact name
+        name: programa
+    # A file, directory or wildcard pattern that describes what to upload
+        path: main
+
+
+  docker:
+    needs: build
+    uses: ./.github/workflows/Docker.yml
+    secrets: inherit
