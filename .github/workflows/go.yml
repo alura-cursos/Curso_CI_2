@@ -43,8 +43,7 @@ jobs:
       uses: snyk/actions@0.4.0
       with:
         # Which Snyk command to run, defaults to test
-        command: Git@5894
-        # Additional arguments to pass to Snyk
+        command: # Additional arguments to pass to Snyk
         #args: # optional
         # Output a snyk.json file with results if running the test command
         #json: # optional
