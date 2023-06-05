@@ -37,6 +37,18 @@ jobs:
     - name: Test
       run: go test -v main_test.go 
       
+    - name: Snyk
+      # You may pin to the exact commit or the version.
+      # uses: snyk/actions@b98d498629f1c368650224d6d212bf7dfa89e4bf
+      uses: snyk/actions@0.4.0
+      with:
+        # Which Snyk command to run, defaults to test
+        command: Git@5894
+        # Additional arguments to pass to Snyk
+        #args: # optional
+        # Output a snyk.json file with results if running the test command
+        #json: # optional
+      
   
   build:
     needs: test
