@@ -1,4 +1,4 @@
-name: Example workflow fr Maven using Snyk
+name: Snyk
 on: push
 jobs:
   security:
