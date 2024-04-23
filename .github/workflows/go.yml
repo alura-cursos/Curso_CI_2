@@ -40,8 +40,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: ['ubuntu-latest', 'ubuntu-18.04']
-    steps:
+        go_version: ['1.18', '1.17', '>=1.18']
+    steps: 
     - uses: actions/checkout@v4
     - name: Build
       run: go build -v main.go
