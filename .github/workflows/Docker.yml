@@ -12,7 +12,13 @@ jobs:
 
     - name: setup Docker Build
       uses: docker/setup-buildx-action@v3.3.0
-      
+
+    - name: Upload a Build Artifact
+      uses: actions/upload-artifact@v4.3.3
+      with:
+    # Artifact name
+        name: apigo
+    
     - name: Docker Login
   # You may pin to the exact commit or the version.
   # uses: docker/login-action@e92390c5fb421da1463c202d546fed0ec5c39f20
