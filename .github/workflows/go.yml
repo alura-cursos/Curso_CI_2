@@ -48,7 +48,15 @@ jobs:
     - uses: actions/checkout@v4
     - name: Build
       run: go build -v main.go
-      
+
+    - name: Upload a Build Artifact
+      uses: actions/upload-artifact@v4.3.3
+      with:
+    # Artifact name
+        name: apigo
+    # A file, directory or wildcard pattern that describes what to upload
+        path: main
+          
   docker:
     needs: build
     uses: ./.github/workflows/Docker.yml
