@@ -2,17 +2,23 @@ name: Go
 
 on:
   push:
-    branches: [ Aula_1 ]
+    branches: [ '*' ]
   pull_request:
-    branches: [ Aula_1 ]
+    branches: [ '*' ]
 
 jobs:
-
   test:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    env:
+      HOST: localhost
+      PORT: 5432
+      USER: root
+      PASSWORD: root
+      DBNAME: root
     strategy:
       matrix:
-        go_version: ['1.18', '1.17', '>=1.18']
+        go_version: ['>=1.18']
+        os: ['ubuntu-latest']
     steps:
     - uses: actions/checkout@v3
 
@@ -30,14 +36,21 @@ jobs:
     - name: Test
       run: go test -v main_test.go 
       
-  
   build:
     needs: test
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: ['ubuntu-latest', 'ubuntu-18.04']
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
     - name: Build
       run: go build -v main.go
+
+    - name: Upload a Build Artifact
+      uses: actions/upload-artifact@v3.1.0
+      with:
+        name: programa
+        path: main
+        
+  docker:
+    needs: build
+    uses: ./.github/workflows/Docker.yml
+    secrets: inherit
