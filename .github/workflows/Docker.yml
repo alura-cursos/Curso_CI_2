@@ -31,5 +31,5 @@ jobs:
       # Path to the Dockerfile
         file: ./Dockerfile
         push: true
-        tags: tarciosilva/curso_ci_2:${{github.ref_name}}
+        
           
