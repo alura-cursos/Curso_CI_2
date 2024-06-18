@@ -4,3 +4,11 @@ on:
   workflow_call:
 
 jobs:
+  EC2:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Download main compilado
+      uses: actions/download-artifact@v3
+      with:
+          name: go-app
+    - uses: actions/checkout@v3
