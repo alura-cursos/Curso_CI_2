@@ -22,3 +22,14 @@ jobs:
         username: tsilvajp
     # Password or personal access token used to log against the Docker registry
         password: ${{ secrets.PWD_DOCKER_HURB }}
+    - name: Build and push Docker images
+  # You may pin to the exact commit or the version.
+  # uses: docker/build-push-action@c382f710d39a5bb4e430307530a720f50c2d3318
+      uses: docker/build-push-action@v6.0.0
+      with:
+        context: .
+      # Path to the Dockerfile
+        file: ./Dockerfile
+        push: true
+        tags: tarciosilva/go_ci:${{github.ref_name}}
+          
