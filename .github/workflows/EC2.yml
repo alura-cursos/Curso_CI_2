@@ -1,0 +1,6 @@
+name: Continuos Delievery
+
+on:
+  workflow_call:
+
+jobs:
