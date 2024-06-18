@@ -12,6 +12,11 @@ jobs:
 
     - name: setup Docker Build
       uses: docker/setup-buildx-action@v2.0.0
+
+    - name: Download main compilado
+      uses: actions/download-artifact@v3
+      with:
+        name: go-app
       
     - name: Docker Login
   # You may pin to the exact commit or the version.
