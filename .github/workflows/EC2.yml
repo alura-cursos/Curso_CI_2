@@ -8,7 +8,5 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Download main compilado
-      uses: actions/download-artifact@v3
-      with:
-          name: go-app
+      uses: actions/download-artifact@v4.1.7
     - uses: actions/checkout@v3
