@@ -13,13 +13,11 @@ jobs:
     
     - name: Deploy to Staging server
       uses: easingthemes/ssh-deploy@main
-      with:
+      env:
         SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-        ARGS: "-rlgoDzvc -i"
-        SOURCE: "dist/"
         REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
         REMOTE_USER: ${{ secrets.REMOTE_USER }}
-        TARGET: /home/ec2-user
+        TARGET: /home/${{ secrets.REMOTE_USER }}
         EXCLUDE: "postgres-data"
 
     - name: executing remote ssh commands using ssh key
