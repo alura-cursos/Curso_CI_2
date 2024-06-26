@@ -19,12 +19,19 @@ jobs:
         SOURCE: "dist/"
         REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
         REMOTE_USER: ${{ secrets.REMOTE_USER }}
-        TARGET: ${{ secrets.REMOTE_TARGET }}
-        EXCLUDE: "/dist/, /node_modules/"
-        SCRIPT_BEFORE: |
-          whoami
-          ls -al
-        SCRIPT_AFTER: |
-          whoami
-          ls -al
-          echo $RSYNC_STDOUT
+        TARGET: /home/${{ secrets.REMOTE_TARGET }}
+        EXCLUDE: "postgres-data"
+
+    - name: executing remote ssh commands using ssh key
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: ${{ secrets.REMOTE_HOST }}
+        username: ${{ secrets.REMOTE_USER }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        port: 22
+        script: |
+          export HOST=${{ secrets.DB_HOST }}
+          export USER=${{ secrets.DB_USER }}
+          export PASSWORD=${{ secrets.DB_PASSWORD }}
+          export DBNAME=${{ secrets.DB_NAME }}
+          export PORT=${{ secrets.DB_PORT }}
