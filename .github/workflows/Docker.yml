@@ -1,0 +1,45 @@
+name: Docker
+
+on:
+  workflow_call:
+    
+jobs:
+
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: setup Docker Build
+      uses: docker/setup-buildx-action@v3.3.0
+
+    - name: Upload a Build Artifact
+      uses: actions/upload-artifact@v4.3.3
+      with:
+    # Artifact name
+        name: apigo
+    
+    - name: Docker Login
+  # You may pin to the exact commit or the version.
+  # uses: docker/login-action@e92390c5fb421da1463c202d546fed0ec5c39f20
+      uses: docker/login-action@v3.1.0
+      with:
+      # Username used to log against the Docker registry
+        username: drack1997
+      # Password or personal access token used to log against the Docker registry
+        password: ${{ secrets.PASSWORD_DOCKER_HUB }}
+        
+    - name: Build and push Docker images             
+  # You may pin to the exact commit or the version.
+  # uses: docker/build-push-action@2cdde995de11925a030ce8070c3d77a52ffcf1c0
+      uses: docker/build-push-action@v5.3.0
+      with:
+    # Build's context is the set of files located in the specified PATH or URL
+        context: .
+    # Path to the Dockerfile
+        file: ./Dockerfile
+    # Push is a shorthand for --output=type=registry
+        push: true
+    # List of tags
+        tags: drack1997/ciproject:${{github.ref_name}}
+          
