@@ -1,0 +1,38 @@
+name: Continuos Delievery
+
+on:
+  workflow_call:
+
+jobs:
+  EC2:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Download main compilado
+      uses: actions/download-artifact@v4.1.7
+    - uses: actions/checkout@v3
+    
+    - name: Deploy to Staging server
+      uses: easingthemes/ssh-deploy@main
+      env:
+        SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
+        REMOTE_USER: ${{ secrets.REMOTE_USER }}
+        TARGET: /home/${{ secrets.REMOTE_USER }}
+        EXCLUDE: "postgres-data"
+
+    - name: executing remote ssh commands using ssh key
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: ${{ secrets.REMOTE_HOST }}
+        username: ${{ secrets.REMOTE_USER }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        port: 22
+        script: |
+          export HOST=${{ secrets.DB_HOST }}
+          export USER=${{ secrets.DB_USER }}
+          export PASSWORD=${{ secrets.DB_PASSWORD }}
+          export DBNAME=${{ secrets.DB_NAME }}
+          export DBPORT=${{ secrets.DB_PORT }}
+          export PORT=8000
+          chmod +x main
+          nohup ./main > nohup.out 2> nohup.err < /dev/null &
