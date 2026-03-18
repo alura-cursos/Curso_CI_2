@@ -1,43 +1,119 @@
-name: Go
+name: Go CI
 
+# -------------------------------------------------------
+# 1️⃣ Gatilhos
+# -------------------------------------------------------
 on:
   push:
-    branches: [ Aula_1 ]
+    branches: [ '*' ]
   pull_request:
-    branches: [ Aula_1 ]
+    branches: [ '*' ]
 
+# -------------------------------------------------------
+# 2️⃣ Jobs
+# -------------------------------------------------------
 jobs:
-
+  # -------------------------------------------------------
+  # TESTE
+  # -------------------------------------------------------
   test:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        go_version: ['1.18', '1.17', '>=1.18']
+        # Versões concretas que o actions/setup-go entende
+        go-version: [ '1.20', '1.21' ]
+
     steps:
-    - uses: actions/checkout@v3
+      # ---------------------------------------------------
+      # Checkout do código
+      # ---------------------------------------------------
+      - uses: actions/checkout@v3
 
-    - name: Set up Go
-      uses: actions/setup-go@v3
-      with:
-        go-version: ${{ matrix.go_version }}
-      
-    - name: Build-DB
-      run: docker-compose build
-      
-    - name: Create-DB
-      run: docker-compose up -d
+      # ---------------------------------------------------
+      # Instala a versão correta do Go
+      # ---------------------------------------------------
+      - name: Configurar Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: ${{ matrix.go-version }}
 
-    - name: Test
-      run: go test -v main_test.go 
-      
-  
+      # ---------------------------------------------------
+      # (Opcional) Instalar docker‑compose v1, caso prefira
+      # ---------------------------------------------------
+      # - name: Instalar docker-compose (v1)
+      #   run: |
+      #     sudo apt-get update
+      #     sudo apt-get install -y docker-compose
+
+      # ---------------------------------------------------
+      # Build da imagem do banco usando o plugin v2
+      # ---------------------------------------------------
+      - name: Build da imagem do DB
+        run: docker compose build
+
+      # ---------------------------------------------------
+      # Subir o container em background
+      # ---------------------------------------------------
+      - name: Iniciar DB
+        run: docker compose up -d
+
+      # ---------------------------------------------------
+      # (Opcional) Esperar o DB ficar pronto
+      # ---------------------------------------------------
+      - name: Esperar DB ficar pronto
+        run: |
+          # Exemplo para PostgreSQL – ajuste conforme seu DB
+          for i in {1..10}; do
+            if docker exec $(docker ps -q -f "ancestor=postgres") pg_isready; then
+              echo "DB pronto!"
+              break
+            fi
+            echo "Aguardando DB..."
+            sleep 2
+          done
+
+      # ---------------------------------------------------
+      # Executar **todos** os testes do módulo
+      # ---------------------------------------------------
+      - name: Rodar testes
+        run: go test -v ./...
+
+  # -------------------------------------------------------
+  # BUILD (compilação)
+  # -------------------------------------------------------
   build:
-    needs: test
+    needs: test                      # só roda se o teste passar
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: ['ubuntu-latest', 'ubuntu-18.04']
+        os: [ubuntu-latest, ubuntu-20.04]   # imagens atuais
+        go-version: [ '1.21' ]            # escolha a versão que será entregue
+
     steps:
-    - uses: actions/checkout@v3
-    - name: Build
-      run: go build -v main.go
+      # ---------------------------------------------------
+      # Checkout
+      # ---------------------------------------------------
+      - uses: actions/checkout@v3
+
+      # ---------------------------------------------------
+      # Instalar a mesma versão do Go usada para o build
+      # ---------------------------------------------------
+      - name: Configurar Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: ${{ matrix.go-version }}
+
+      # ---------------------------------------------------
+      # Compilar o binário (ou todos os binários do módulo)
+      # ---------------------------------------------------
+      - name: Compilar
+        run: go build -v ./...
+
+      # ---------------------------------------------------
+      # (Opcional) Upload do binário como artefato
+      # ---------------------------------------------------
+      - name: Upload do binário
+        uses: actions/upload-artifact@v3
+        with:
+          name: go-binary-${{ matrix.os }}
+          path: ./mybinary   # troque pelo nome real do binário gerado
